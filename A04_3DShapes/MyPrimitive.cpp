@@ -114,12 +114,48 @@ void MyPrimitive::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivis
 	//3--2
 	//|  |
 	//0--1
-	vector3 point0(-fValue, -fValue, fValue); //0
+	
+	
+	/*vector3 point0(-fValue, -fValue, fValue); //0
 	vector3 point1(fValue, -fValue, fValue); //1
 	vector3 point2(fValue, fValue, fValue); //2
 	vector3 point3(-fValue, fValue, fValue); //3
 
-	AddQuad(point0, point1, point3, point2);
+	AddQuad(point0, point1, point3, point2);*/
+
+	float _sin = 0;
+	float _cos = 0;
+
+	float _cos2 = 0;
+	float _sin2 = 0;
+
+
+	for (int i = 0; i < a_nSubdivisions; ++i) {
+		float currentAngle = ((float)(PI * 2) * ((float)i / a_nSubdivisions));
+		float nextAngle = ((float)(PI * 2) * ((float)(i+1) / a_nSubdivisions));
+
+		//std::cout << "i: " << i << ", Subs: " << a_nSubdivisions << std::endl;
+		//std::cout << "Current Angle: " << currentAngle << std::endl;
+		
+		_sin = a_fRadius * sin(currentAngle);
+		_cos = a_fRadius * cos(currentAngle);
+
+		_sin2 = a_fRadius * sin(nextAngle);
+		_cos2 = a_fRadius * cos(nextAngle);
+
+		//Creating the base here
+		vector3 point0(_sin, _cos, 0);
+		vector3 point1(0, 0, 0);
+		vector3 point2(_sin2, _cos2, 0);
+		vector3 point3(_sin, _cos, 0);
+
+		AddQuad(point0, point1, point2, point3);
+
+		//Creating the upright here
+		vector3 point4(0, 0, a_fHeight);
+
+		AddQuad(point0, point4, point2, point3);
+	}
 
 	//Your code ends here
 	CompileObject(a_v3Color);
@@ -139,12 +175,63 @@ void MyPrimitive::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubd
 	//3--2
 	//|  |
 	//0--1
-	vector3 point0(-fValue, -fValue, fValue); //0
-	vector3 point1(fValue, -fValue, fValue); //1
-	vector3 point2(fValue, fValue, fValue); //2
-	vector3 point3(-fValue, fValue, fValue); //3
 
-	AddQuad(point0, point1, point3, point2);
+	float _sin = 0;
+	float _cos = 0;
+
+	float _cos2 = 0;
+	float _sin2 = 0;
+
+	//Creating the base
+	for (int i = 0; i < a_nSubdivisions; ++i) {
+		float currentAngle = ((float)(PI * 2) * ((float)i / a_nSubdivisions));
+		float nextAngle = ((float)(PI * 2) * ((float)(i + 1) / a_nSubdivisions));
+
+		//std::cout << "i: " << i << ", Subs: " << a_nSubdivisions << std::endl;
+		//std::cout << "Current Angle: " << currentAngle << std::endl;
+
+		_sin = a_fRadius * sin(currentAngle);
+		_cos = a_fRadius * cos(currentAngle);
+
+		_sin2 = a_fRadius * sin(nextAngle);
+		_cos2 = a_fRadius * cos(nextAngle);
+
+		//Creating the base here
+		vector3 point0(_sin, _cos, 0);
+		vector3 point1(0, 0, 0);
+		vector3 point2(_sin2, _cos2, 0);
+		vector3 point3(_sin, _cos, 0);
+
+		AddQuad(point0, point1, point2, point3);
+	}
+
+	//Creating the cap
+	for (int i = 0; i < a_nSubdivisions; ++i) {
+		float currentAngle = ((float)(PI * 2) * ((float)i / a_nSubdivisions));
+		float nextAngle = ((float)(PI * 2) * ((float)(i + 1) / a_nSubdivisions));
+
+		//std::cout << "i: " << i << ", Subs: " << a_nSubdivisions << std::endl;
+		//std::cout << "Current Angle: " << currentAngle << std::endl;
+
+		_sin = a_fRadius * sin(currentAngle);
+		_cos = a_fRadius * cos(currentAngle);
+
+		_sin2 = a_fRadius * sin(nextAngle);
+		_cos2 = a_fRadius * cos(nextAngle);
+
+		vector3 point0(_sin, _cos, a_fHeight);
+		vector3 point1(0, 0, a_fHeight);
+		vector3 point2(_sin2, _cos2, a_fHeight);
+		vector3 point3(_sin, _cos, a_fHeight);
+
+		AddQuad(point0, point1, point2, point3);
+
+		//Creating the uprights here
+		vector3 point4(_sin, _cos, 0);
+		vector3 point5(_sin2, _cos2, 0);
+
+		AddQuad(point0, point2, point4, point5);
+	}
 
 	//Your code ends here
 	CompileObject(a_v3Color);
@@ -160,17 +247,88 @@ void MyPrimitive::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float
 	Init();
 
 	//Your code starts here
-	float fValue = 0.5f;
-	//3--2
-	//|  |
-	//0--1
-	vector3 point0(-fValue, -fValue, fValue); //0
-	vector3 point1(fValue, -fValue, fValue); //1
-	vector3 point2(fValue, fValue, fValue); //2
-	vector3 point3(-fValue, fValue, fValue); //3
+	
+	float _sin = 0;
+	float _cos = 0;
 
-	AddQuad(point0, point1, point3, point2);
+	float _cos2 = 0;
+	float _sin2 = 0;
 
+	float _innerCos = 0;
+	float _innerSin = 0;
+
+	float _innerCos2 = 0;
+	float _innerSin2 = 0;
+
+	//Creating the base
+	for (int i = 0; i < a_nSubdivisions; ++i) {
+		float currentAngle = ((float)(PI * 2) * ((float)i / a_nSubdivisions));
+		float nextAngle = ((float)(PI * 2) * ((float)(i + 1) / a_nSubdivisions));
+
+		//Creating the outer ring
+		_sin = a_fOuterRadius * sin(currentAngle);
+		_cos = a_fOuterRadius * cos(currentAngle);
+
+		_sin2 = a_fOuterRadius * sin(nextAngle);
+		_cos2 = a_fOuterRadius * cos(nextAngle);
+
+
+		//Creating the inner ring
+		_innerSin = a_fInnerRadius * sin(currentAngle);
+		_innerCos = a_fInnerRadius * cos(currentAngle);
+
+		_innerSin2 = a_fInnerRadius * sin(nextAngle);
+		_innerCos2 = a_fInnerRadius * cos(nextAngle);
+
+		//Creating the base here
+		vector3 point0(_sin, _cos, 0);
+		vector3 point1(_innerSin, _innerCos, 0);
+		vector3 point2(_innerSin2, _innerCos2, 0);
+		vector3 point3(_sin2, _cos2, 0);
+
+		AddQuad(point3, point2, point0, point1);
+	}
+
+	//Creating the cap
+	for (int i = 0; i < a_nSubdivisions; ++i) {
+		float currentAngle = ((float)(PI * 2) * ((float)i / a_nSubdivisions));
+		float nextAngle = ((float)(PI * 2) * ((float)(i + 1) / a_nSubdivisions));
+
+		//Creating the outer ring
+		_sin = a_fOuterRadius * sin(currentAngle);
+		_cos = a_fOuterRadius * cos(currentAngle);
+
+		_sin2 = a_fOuterRadius * sin(nextAngle);
+		_cos2 = a_fOuterRadius * cos(nextAngle);
+
+
+		//Creating the inner ring
+		_innerSin = a_fInnerRadius * sin(currentAngle);
+		_innerCos = a_fInnerRadius * cos(currentAngle);
+
+		_innerSin2 = a_fInnerRadius * sin(nextAngle);
+		_innerCos2 = a_fInnerRadius * cos(nextAngle);
+
+		//Creating the base here
+		vector3 point0(_sin, _cos, a_fHeight);
+		vector3 point1(_innerSin, _innerCos, a_fHeight);
+		vector3 point2(_innerSin2, _innerCos2, a_fHeight);
+		vector3 point3(_sin2, _cos2, a_fHeight);
+
+		AddQuad(point0, point1, point3, point2);
+
+		//Adding the outer shell
+		vector3 point4(_sin, _cos, 0);
+		vector3 point5(_sin2, _cos2, 0);
+
+		AddQuad(point3, point5, point0, point4);
+
+		//Adding the inner shell
+		vector3 point6(_innerSin, _innerCos, 0);
+		vector3 point7(_innerSin2, _innerCos2, 0);
+
+		AddQuad(point1, point6, point2, point7);
+	}
 	//Your code ends here
 	CompileObject(a_v3Color);
 }
@@ -209,6 +367,7 @@ void MyPrimitive::GenerateTorus(float a_fOuterRadius, float a_fInnerRadius, int 
 }
 void MyPrimitive::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Color)
 {
+	//Attempting to build a sphere by stacking cylinders on top of each other
 	//Sets minimum and maximum of subdivisions
 	if (a_nSubdivisions < 1)
 	{
@@ -217,22 +376,77 @@ void MyPrimitive::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a
 	}
 	if (a_nSubdivisions > 6)
 		a_nSubdivisions = 6;
+	if (a_nSubdivisions %2 == 0) {
+		a_nSubdivisions++;
+	}
 
 	Release();
 	Init();
+	
+	float medianRingNum = a_nSubdivisions / 2;
+	float ringZ = 0;
+	float ringHeight = 0;
 
-	//Your code starts here
-	float fValue = 0.5f;
-	//3--2
-	//|  |
-	//0--1
-	vector3 point0(-fValue, -fValue, fValue); //0
-	vector3 point1(fValue, -fValue, fValue); //1
-	vector3 point2(fValue, fValue, fValue); //2
-	vector3 point3(-fValue, fValue, fValue); //3
+	for (int j = 0; j < a_nSubdivisions; ++j) {
+		float _sin = 0;
+		float _cos = 0;
 
-	AddQuad(point0, point1, point3, point2);
+		float _cos2 = 0;
+		float _sin2 = 0;
+	
+		float ringRadius = 1 / abs(j - medianRingNum) * a_fRadius;
+		
+		ringHeight = 0.5f;
+		ringZ = ringZ + ringHeight;
+		
+		//Creating the base
+		for (int i = 0; i < a_nSubdivisions; ++i) {
+			float currentAngle = ((float)(PI * 2) * ((float)i / a_nSubdivisions));
+			float nextAngle = ((float)(PI * 2) * ((float)(i + 1) / a_nSubdivisions));
 
-	//Your code ends here
+			_sin = ringRadius * sin(currentAngle);
+			_cos = ringRadius * cos(currentAngle);
+
+			_sin2 = ringRadius * sin(nextAngle);
+			_cos2 = ringRadius * cos(nextAngle);
+
+			//Creating the base here
+			vector3 point0(_sin, _cos, ringZ);
+			vector3 point1(0, 0, ringZ);
+			vector3 point2(_sin2, _cos2, ringZ);
+			vector3 point3(_sin, _cos, ringZ);
+
+			AddQuad(point0, point1, point2, point3);
+		}
+
+		//Creating the cap
+		for (int i = 0; i < a_nSubdivisions; ++i) {
+			float currentAngle = ((float)(PI * 2) * ((float)i / a_nSubdivisions));
+			float nextAngle = ((float)(PI * 2) * ((float)(i + 1) / a_nSubdivisions));
+
+			//std::cout << "i: " << i << ", Subs: " << a_nSubdivisions << std::endl;
+			//std::cout << "Current Angle: " << currentAngle << std::endl;
+
+			_sin = ringRadius * sin(currentAngle);
+			_cos = ringRadius * cos(currentAngle);
+
+			_sin2 = ringRadius * sin(nextAngle);
+			_cos2 = ringRadius * cos(nextAngle);
+
+			vector3 point0(_sin, _cos, ringZ + ringHeight);
+			vector3 point1(0, 0, ringZ + ringHeight);
+			vector3 point2(_sin2, _cos2, ringZ + ringHeight);
+			vector3 point3(_sin, _cos, ringZ + ringHeight);
+
+			AddQuad(point0, point1, point2, point3);
+
+			//Creating the uprights here
+			vector3 point4(_sin, _cos, ringZ);
+			vector3 point5(_sin2, _cos2, ringZ);
+
+			AddQuad(point0, point2, point4, point5);
+		}
+	}
+
 	CompileObject(a_v3Color);
 }
