@@ -14,6 +14,30 @@ void AppClass::InitVariables(void)
 	m_pMeshMngr->LoadModel("Sorted\\WallEye.bto", "WallEye");
 
 	fDuration = 1.0f;
+
+	//We will be changing fDuration based on the distance between points so we need to save the original
+	origFDuration = fDuration;
+
+	pointStartTime = 0;
+	//Add points to the vector
+	points = {
+		vector3(-4.0f,-2.0f, 5.0f),
+		vector3(1.0f,-2.0f, 5.0f),
+		vector3(-3.0f,-1.0f, 3.0f),
+		vector3(2.0f,-1.0f, 3.0f),
+		vector3(-2.0f, 0.0f, 0.0f),
+		vector3(3.0f, 0.0f, 0.0f),
+		vector3(-1.0f, 1.0f,-3.0f),
+		vector3(4.0f, 1.0f,-3.0f),
+		vector3(0.0f, 2.0f,-5.0f),
+		vector3(5.0f, 2.0f,-5.0f),
+		vector3(1.0f, 3.0f,-5.0f)
+	};
+
+	//Starting off the object at the first point and setting up the second point
+	currentPointNum = 0;
+	nextPointNum = 1;
+
 }
 
 void AppClass::Update(void)
@@ -36,7 +60,43 @@ void AppClass::Update(void)
 #pragma endregion
 
 #pragma region Your Code goes here
-	m_pMeshMngr->SetModelMatrix(IDENTITY_M4, "WallEye");
+	//How much time has elapsed between now and the start of our movement towards nextPoint
+	pointElapsedTime = fRunTime - pointStartTime;
+
+	//Telling the model what point it's coming from and what point it's going towards
+	currentPoint = points[currentPointNum];
+	nextPoint = points[nextPointNum];	
+
+	//Find the distance between the two points. Scale fDuration up by that distance so points that are further apart take longer to traverse	
+	/*float totalDist = glm::distance(currentPoint, nextPoint);
+	fDuration = (totalDist / 3);*/
+
+	//What percentage of the way has the model traveled	
+	double percentToNextPoint = pointElapsedTime / fDuration;
+	float mappedPercent = (float)MapValue(percentToNextPoint, 0.0, (double)fDuration, 0.0, 1.0);
+	
+	//Find the current position of the model by lerping between the current point and the next point based on the percent of the way we've travelled between the two points, mapped between 0 and 1
+	currentPos = glm::lerp(currentPoint, nextPoint, mappedPercent);
+
+	currentTransformMatrix = glm::translate(IDENTITY_M4, currentPos);
+	
+	if (pointElapsedTime >= fDuration) {
+	//if(currentPos == nextPoint){
+		currentPointNum++;
+		nextPointNum++;
+
+		pointStartTime = fRunTime;
+		
+		if (nextPointNum >= points.size()) {
+			nextPointNum = 0;
+		}
+
+		if (currentPointNum >= points.size()) {
+			currentPointNum = 0;
+		}
+	}
+
+	m_pMeshMngr->SetModelMatrix(currentTransformMatrix, "WallEye");
 #pragma endregion
 
 #pragma region Does not need changes but feel free to change anything here

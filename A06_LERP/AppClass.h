@@ -13,6 +13,21 @@ using namespace ReEng; //Using ReEng namespace to use all the classes in the dll
 class AppClass : public ReEngAppClass
 {
 	float fDuration = 1.0f; //Time Duration of the stops
+	float pointStartTime;
+	float pointElapsedTime;
+	float origFDuration;
+
+	std::vector<vector3> points; //Vector holding the locations of each point to lerp between
+	
+	vector3 currentPoint; //The point we're moving away from
+	vector3 nextPoint; //The point we're moving towards
+	vector3 currentPos;
+
+	matrix4 currentTransformMatrix = IDENTITY_M4;
+
+	int currentPointNum = 0;
+	int nextPointNum = 0;
+
 public:
 	typedef ReEngAppClass super;
 	/*
