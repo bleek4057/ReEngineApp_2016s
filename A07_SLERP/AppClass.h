@@ -13,7 +13,28 @@ using namespace ReEng; //Using ReEng namespace to use all the classes in the dll
 class AppClass : public ReEngAppClass
 {
 	float m_fDay = 1.0f; //How much time in seconds a day lasts;
+	matrix4 m4Sun;
+	matrix4 m4Earth;
+	matrix4 m4Moon;
 
+	//Revolution
+	glm::quat earthRevolutionStartQuat;
+	glm::quat earthRevolutionEndQuat;
+	glm::quat newEarthRevolutionQuat;
+
+	//Orbit
+	glm::quat earthOrbitStartQuat;
+	glm::quat earthOrbitEndQuat;
+	glm::quat newEarthOrbitQuat;
+
+	glm::quat moonOrbitStartQuat;
+	glm::quat moonOrbitEndQuat;
+	glm::quat newMoonOrbitQuat;
+
+	float currentEarthRotationTime = 0;
+	float currentEarthOrbitTime = 0;
+
+	float currentMoonOrbitTime = 0;
 public:
 	typedef ReEngAppClass super;
 	/*
